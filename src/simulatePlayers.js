@@ -3,7 +3,7 @@ var Firebase = require('firebase'),
     request = require('request'),
     fs = require('fs');
 /*
-node simulatePlayers.js action=clearChallengeResponses data=data.json firebaseID=singpath-play token=<secret>
+node simulatePlayers.js action=clearChallengeResponses data=data.json numPlayers=2 firebaseID=singpath-play token=<secret>
 node simulatePlayers.js action=simulate numPlayerss=4 data=data.json firebaseID=singpath-play token=<secret>
 node simulatePlayers.js action=simulate playerType=player1 numPlayers=4 data=data.json firebaseID=singpath-play token=<secret>
 */
@@ -48,26 +48,48 @@ var readSimulationData = function(){
     load_data(obj);
 }
 
+var clearAllChallengeSubmissionsForEvent = function(eventKey){
+    console.log("Clearing submissions for event "+eventKey);
+}
+
+var removeAllParticipantsFromEvent = function(eventKey){
+    console.log("Removing all participants from event "+eventKey);
+}
+
+var createPlayerAccessToken = function(playerId,accesstoken){
+  console.log("creating token");
+  var FirebaseTokenGenerator = require("firebase-token-generator");
+  var tokenGenerator = new FirebaseTokenGenerator(accesstoken);
+  // By default, create tokens that expire in June 2017
+  var playerToken = tokenGenerator.createToken({ uid: playerId, some: "arbitrary", data: "here" },
+                                         { expires:1497151174 });
+  //console.log(playerToken);
+  return playerToken;
+}
+
 var startSimulation = function(){
     // clearEventProgress for all challenges to reset event. 
+    var eventKey = data['eventKey'];
+    clearAllChallengeSubmissionsForEvent(eventKey);
     // remove all users from the event. 
-
+    removeAllParticipantsFromEvent(eventKey);
     // create numPlayers new players. 
     for (var i=0; i<options["numPlayers"]; i++){
       var finished = function(id){console.log(id,"finished");};
-      accessToken = "CREATE_ACCESS_TOKENS";
-      createNewPlayer(i, "player1", accessToken, finished);
+      var uid = "Player_"+i;
+      accessToken = createPlayerAccessToken(uid,options['token']);
+      createNewPlayer(uid, "player1", playerToken, finished);
     }
 }
 
-var createNewPlayer = function(id, playerType, accessToken, callback){
+var createNewPlayer = function(id, playerType, playerToken, callback){
     console.log(id+" of type "+playerType+" starting.");
     console.log(id+" logging in.");
     // login player. 
     console.log(id+" registering on ClassMentors");
     // register if player does not exist.
     // lookup details for playerType 
-    var instructions = data[playerType];
+    var instructions = data.players[playerType];
     if(instructions){
       console.log(id+" loaded instructions for "+playerType);
     } else {
@@ -76,8 +98,8 @@ var createNewPlayer = function(id, playerType, accessToken, callback){
     // Watch event for changes. 
     console.log(id+" watching event "+data.eventKey+" for challenges to open.");
     // Find challenges on event to watch for. 
-    for (challengeKey in data[playerType].challenges){
-      console.log(id+" waiting for challenge "+challengeKey+" to open");
+    for (challengeRef in data.players[playerType].challenges){
+      console.log(id+" waiting for challenge "+challengeRef+" ("+data.challenges[challengeRef]+") to open");
       //console.log(data[playerType].challenges[challengeKey]);
     }
     

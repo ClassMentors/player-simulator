@@ -35,13 +35,31 @@ describe("simulatePlayer", function() {
     it("can load simulation data", function(done) {
         worker.load_data({
             "eventKey":"EVENT1234",
+            "challenges":{
+                "1": "challengeKey1",
+                "2": "challengeKey2"
+            },
+            "players":{
             "player1":{
+                "delayInMilliseconds":100,
                 "challenges":{
-                    "challengeKey1":{
+                    "1":{
                         "solution":"Test solution"
                     },
-                    "challengeKey2":{
+                    "2":{
                         "solution":"Test solution"
+                    }
+                }
+            },
+            "player2":{
+                    "delayInMilliseconds":100,
+                    "challenges":{
+                        "1":{
+                            "solution":"Test solution"
+                        },
+                        "2":{
+                            "solution":"Test solution"
+                        }
                     }
                 }
             }
