@@ -1,5 +1,6 @@
 {
     "eventKey":"EVENT1234",
+    "eventPassword":"test",
     "challenges":{
         "1": "challengeKey1",
         "2": "challengeKey2"

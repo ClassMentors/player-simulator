@@ -50,14 +50,16 @@ var readSimulationData = function(){
 
 var clearAllChallengeSubmissionsForEvent = function(eventKey){
     console.log("Clearing submissions for event "+eventKey);
+    //TODO
 }
 
 var removeAllParticipantsFromEvent = function(eventKey){
     console.log("Removing all participants from event "+eventKey);
+    //TODO
 }
 
 var createPlayerAccessToken = function(playerId,accesstoken){
-  console.log("creating token");
+  console.log("creating token for player "+playerId);
   var FirebaseTokenGenerator = require("firebase-token-generator");
   var tokenGenerator = new FirebaseTokenGenerator(accesstoken);
   // By default, create tokens that expire in June 2017
@@ -82,28 +84,44 @@ var startSimulation = function(){
     }
 }
 
+var registerPlayerOnClassMentors = function(playerId){
+    console.log(playerId+" registering on ClassMentors.");
+    //TODO
+}
+
+var registePlayerForEvent = function(playerId, eventId, password){
+    console.log(playerId+" joining event "+eventId);
+    //TODO
+}
+
+
 var createNewPlayer = function(id, playerType, playerToken, callback){
     console.log(id+" of type "+playerType+" starting.");
-    console.log(id+" logging in.");
-    // login player. 
-    console.log(id+" registering on ClassMentors");
-    // register if player does not exist.
+
+    // Register player on ClassMentors
+    registerPlayerOnClassMentors(id);
+
+    // Have player join event. 
+    registePlayerForEvent(id, data.eventKey, data.eventPassword);
     // lookup details for playerType 
     var instructions = data.players[playerType];
     if(instructions){
-      console.log(id+" loaded instructions for "+playerType);
+      //console.log(id+" loaded instructions for "+playerType);
     } else {
       console.log("ERROR: no instructions found for "+playerType);
     } 
     // Watch event for changes. 
     console.log(id+" watching event "+data.eventKey+" for challenges to open.");
-    // Find challenges on event to watch for. 
+    // Watch for challenges to open and submit response provided in data.json file. 
     for (challengeRef in data.players[playerType].challenges){
-      console.log(id+" waiting for challenge "+challengeRef+" ("+data.challenges[challengeRef]+") to open");
-      //console.log(data[playerType].challenges[challengeKey]);
+      // TODO - add code to check for open challenges and then watch for challenges to open.
+      // TODO - submit responses to challenges once they open. 
+      //console.log(id+" waiting for challenge "+challengeRef+" ("+data.challenges[challengeRef]+").");
+      console.log(id+" submitting response for challenge "+challengeRef+" ("+data.challenges[challengeRef]+") to open");
+      
     }
     
-    // When finished, pass id to callback. 
+    // Once submissions have been make for all the challenges, pass id to callback. 
     if(callback) {callback(id);}
 }
 
@@ -120,7 +138,6 @@ if (require.main === module) {
     console.log("Exiting after ",timeout,"milliseconds")
         process.exit(0);
   }, timeout);
-  
 
   // Export modules if we aren't running the worker so that we can test functions. 
 } else {
