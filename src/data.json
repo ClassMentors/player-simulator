@@ -1,0 +1,13 @@
+{
+    "eventKey":"EVENT1234",
+    "player1":{
+        "challenges":{
+            "challengeKey1":{
+                "solution":"Test solution"
+            },
+            "challengeKey2":{
+                "solution":"Test solution"
+            }
+        }
+    }
+}
