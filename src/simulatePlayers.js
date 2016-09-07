@@ -77,7 +77,7 @@ var startSimulation = function(){
     for (var i=0; i<options["numPlayers"]; i++){
       var finished = function(id){console.log(id,"finished");};
       var uid = "Player_"+i;
-      accessToken = createPlayerAccessToken(uid,options['token']);
+      playerToken = createPlayerAccessToken(uid,options['token']);
       createNewPlayer(uid, "player1", playerToken, finished);
     }
 }
